@@ -3,9 +3,7 @@ import 'package:pop_value_back/countries_list_api.dart';
 import 'package:pop_value_back/countries_list_screen.dart';
 
 void main() => runApp(
-  const MaterialApp(
-    home: MyApp(),
-  ),
+    const MyApp(),
 );
 
 class MyApp extends StatelessWidget {
@@ -37,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   String? selectedLanguage;
 
-  List<String> languages = ["java", "C", "C++", "Python"];
+  List<String> languages = ["java", "C", "C++", "Python", "JavaScript", "C/CPP", "PHP", "Swift", "C# (C- Sharp)", "Ruby", "Objective-C", "SQL", "Go", "Kotlin", "R", "Matlab", "Groovy", "Assembly language", "Visual Basic", "Perl", "Pascal", "Scala", "Shell"];
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +48,18 @@ class MyHomePageState extends State<MyHomePage> {
             Container(
               color: Colors.white,
               height: 50,
-              width: 150,
               child: InkWell(
                   onTap: () async {
                      selectedLanguage = await Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => CountiresFromApiScreen()));
+                            builder: (context) => CountriesList()));
                     setState(() {
 
                     });
                   },
                   child: Container(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text("${selectedLanguage ?? 'Select'}   "),
                         const Icon(
@@ -70,11 +67,7 @@ class MyHomePageState extends State<MyHomePage> {
                         ),
                       ],
                     ),
-                  )
-                //  DropdownButtonFormField(
-                //   items: [],
-                //   hint: Text("Select"),
-                // ),
+                  ),
               ),
             ),
           ],

@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:pop_value_back/countries_list_response.dart';
 
 class CountiresFromApiScreen extends StatefulWidget {
   const CountiresFromApiScreen({Key? key}) : super(key: key);
@@ -11,15 +13,27 @@ class CountiresFromApiScreen extends StatefulWidget {
 }
 
 class _CountiresFromApiScreenState extends State<CountiresFromApiScreen> {
+final ScrollController _scrollController = ScrollController();
 
-  String? selectedLanguage;
-  Future ? countryList;
-  List<String> languages = ["java", "C", "C++", "Python"];
+  String? selectedCountry;
+
+  GooglePlaceDetailsFromPlaceIdResponse ? countriesData;
+  List<Datum> ldata =[];
 
   @override
   void initState() {
     // TODO: implement initState
-    countryList = getAllCategory();
+    Future.delayed(Duration(seconds: 5), (){
+      getAllCategory().then((countriesData) {
+        print(countriesData!.data!.values.toList()[0].country);
+        setState(() {
+          ldata = countriesData!.data!.values.toList();
+          print(ldata);
+        });
+      });
+    });
+
+
     super.initState();
   }
 
@@ -29,37 +43,38 @@ class _CountiresFromApiScreenState extends State<CountiresFromApiScreen> {
       appBar: AppBar(
         title: Text("Counties"),
       ),
-      body: SafeArea(
+      body: ldata.length == 0 ? Center(child: CircularProgressIndicator(),)
+          : SafeArea(
           child: Container(
-            child: FutureBuilder(
-                future: countryList,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if(snapshot.hasData) {
-                    return Center(
-                      child: ListView.builder(
-                          itemCount: languages.length,
-                          itemBuilder: (context,index) {
-                            return item(
-                              text: languages[index], //sent String
-                              isSelected: languages[index] ==
-                                  selectedLanguage,
-                              ontap: () {
+            padding: EdgeInsets.all(5),
+            margin: EdgeInsets.all(5),
+            child: Scrollbar(
+              isAlwaysShown: true,
+              controller: _scrollController,
+              child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: ldata.length,
+                  itemBuilder: (context,index) {
+                    return Card(
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        child: item(
+                          text: ldata[index].country!, //sent String
+                          isSelected: ldata[index].country! ==
+                              selectedCountry,
+                          ontap: () {
 
-                                setState(() {
-                                  selectedLanguage = languages[index];
-                                });
-                                Navigator.of(context).pop(selectedLanguage);
-                                print(selectedLanguage);
-                              },
-                            );
-                          }
+                            setState(() {
+                              selectedCountry = ldata[index].country!;
+                            });
+                            Navigator.of(context).pop(selectedCountry);
+                            print(selectedCountry);
+                          },
+                        ),
                       ),
                     );
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text("Unable to Process your request, Please try after sometime"),);
                   }
-                  return Center(child: CircularProgressIndicator(),);
-                }
+              ),
             ),
           )
       ),
@@ -75,13 +90,18 @@ class _CountiresFromApiScreenState extends State<CountiresFromApiScreen> {
         onTap: () => ontap(),
         child: Row(
           children: [
-            Text(text),
+            Container(
+                height: 30,
+                child: Center(child: Text(text))),
             const SizedBox(
               width: 10,
             ),
             if (isSelected)
-              const Icon(Icons
-                  .check), // show only check while it is selected, or you can use the same logic on Main row item
+              Container(
+                height: 30,
+                child: const Icon(Icons
+                    .check,size: 25,),
+              ),
           ],
         ),
       ),
@@ -93,7 +113,10 @@ class _CountiresFromApiScreenState extends State<CountiresFromApiScreen> {
     var response = await http.get(allCountiesUrl);
     log("All Countries response : ${response.statusCode.toString()}");
     log("All Countries body : ${response.body}");
-    return json.decode(response.body);
+    final parsedJson = json.decode(response.body);
+    final countriesData = GooglePlaceDetailsFromPlaceIdResponse.fromJson(parsedJson);
+    print("data : ${countriesData.data!.values.toList()[0].country}");
+    return countriesData;
   }
 
 }
