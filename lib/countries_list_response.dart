@@ -4,12 +4,12 @@
 
 import 'dart:convert';
 
-GooglePlaceDetailsFromPlaceIdResponse googlePlaceDetailsFromPlaceIdResponseFromJson(String str) => GooglePlaceDetailsFromPlaceIdResponse.fromJson(json.decode(str));
+CountryDataResponse countryDataResponseFromJson(String str) => CountryDataResponse.fromJson(json.decode(str));
 
-String googlePlaceDetailsFromPlaceIdResponseToJson(GooglePlaceDetailsFromPlaceIdResponse data) => json.encode(data.toJson());
+String googlePlaceDetailsFromPlaceIdResponseToJson(CountryDataResponse data) => json.encode(data.toJson());
 
-class GooglePlaceDetailsFromPlaceIdResponse {
-  GooglePlaceDetailsFromPlaceIdResponse({
+class CountryDataResponse {
+  CountryDataResponse({
     this.status,
     this.statusCode,
     this.version,
@@ -23,7 +23,7 @@ class GooglePlaceDetailsFromPlaceIdResponse {
   String ? access;
   Map<String, Datum> ? data;
 
-  factory GooglePlaceDetailsFromPlaceIdResponse.fromJson(Map<String, dynamic> json) => GooglePlaceDetailsFromPlaceIdResponse(
+  factory CountryDataResponse.fromJson(Map<String, dynamic> json) => CountryDataResponse(
     status: json["status"] == null ? null : json["status"],
     statusCode: json["status-code"] == null ? null : json["status-code"],
     version: json["version"] == null ? null : json["version"],

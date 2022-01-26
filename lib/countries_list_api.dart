@@ -17,13 +17,13 @@ final ScrollController _scrollController = ScrollController();
 
   String? selectedCountry;
 
-  GooglePlaceDetailsFromPlaceIdResponse ? countriesData;
+  CountryDataResponse ? countriesData;
   List<Datum> ldata =[];
 
   @override
   void initState() {
     // TODO: implement initState
-    Future.delayed(Duration(seconds: 5), (){
+    Future.delayed(Duration(seconds: 2), (){
       getAllCategory().then((countriesData) {
         print(countriesData!.data!.values.toList()[0].country);
         setState(() {
@@ -32,9 +32,7 @@ final ScrollController _scrollController = ScrollController();
         });
       });
     });
-
-
-    super.initState();
+   super.initState();
   }
 
   @override
@@ -108,13 +106,13 @@ final ScrollController _scrollController = ScrollController();
     );
   }
 
-  Future getAllCategory() async {
+  Future<CountryDataResponse> getAllCategory() async {
     var allCountiesUrl = Uri.parse('https://api.first.org/data/v1/countries');
     var response = await http.get(allCountiesUrl);
     log("All Countries response : ${response.statusCode.toString()}");
     log("All Countries body : ${response.body}");
     final parsedJson = json.decode(response.body);
-    final countriesData = GooglePlaceDetailsFromPlaceIdResponse.fromJson(parsedJson);
+    final countriesData = CountryDataResponse.fromJson(parsedJson);
     print("data : ${countriesData.data!.values.toList()[0].country}");
     return countriesData;
   }
